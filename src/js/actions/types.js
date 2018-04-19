@@ -1,0 +1,3 @@
+export const CLICK_NUMBER = 'CLICK_NUMBER';
+export const CLICK_OPERATOR = 'CLICK_OPERATOR';
+export const CLICK_CLEAR = 'CLICK_CLEAR';

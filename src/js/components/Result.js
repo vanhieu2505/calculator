@@ -17,7 +17,7 @@ const mapStateToProps = (state) => ({
 });
 
 Result.propTypes = {
-    renderingNumber: PropTypes.number.isRequired
+    renderingNumber: PropTypes.string.isRequired
 }
 
 export default connect(mapStateToProps, {})(Result);

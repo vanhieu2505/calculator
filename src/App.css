@@ -41,6 +41,12 @@
     width: 80px;
     padding: 20px 0;
 }
+.number.selected, .clear.selected {
+  background: #666;
+}
+.operator.selected {
+  opacity: 0.6;
+}
 .operator {
     color: #fff !important;
     background: darkorange !important;
