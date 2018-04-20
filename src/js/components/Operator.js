@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { clickOperator } from '../actions/calculatorActions';
 
 class Operator extends Component {
     constructor(props) {
@@ -18,6 +21,7 @@ class Operator extends Component {
         this.setState({
             selected: false
         });
+        this.props.clickOperator(operator);
     }
 
     render() {
@@ -31,4 +35,8 @@ class Operator extends Component {
     }
 }
 
-export default Operator;
+Operator.propTypes = {
+    clickOperator: PropTypes.func.isRequired
+};
+
+export default connect(null, { clickOperator })(Operator);
