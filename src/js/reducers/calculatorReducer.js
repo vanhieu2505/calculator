@@ -134,8 +134,7 @@ export default function(state = initialState, action) {
                                     break;                                
                             }                            
                         }
-                        console.log(breakIndex);
-
+                        
                         const updatedPendingOperator = state.pendingOperator.map((item, index) => {
                             if (index <= breakIndex) {
                                 return item;
@@ -172,8 +171,7 @@ export default function(state = initialState, action) {
                                 total = parseFloat(state.enteringNumber[i]) - total;
                             case '+':
                                 total = parseFloat(state.enteringNumber[i]) + total;
-                        }
-                        console.log(total);
+                        }                        
                     }
                 }
                 const pendingOperator = state.pendingOperator.map((item, index) => {
