@@ -52,42 +52,108 @@ export default function(state = initialState, action) {
                     if (action.payload === '=') {
                         //calculate and show data
                         let total = parseFloat(state.renderingNumber);
+                        
                         for (let i = state.pendingOperator.length - 1; i >= 0; i--) {
                             switch (state.pendingOperator[i]) {
-                                case '&divide;':
-                                    total = parseFloat(state.enteringNumber[i]) / total;                                
-                                case '&times;':
-                                    total = parseFloat(state.enteringNumber[i]) * total;                                
-                                case '&minus;':                                
+                                case '÷':
+                                    total = parseFloat(state.enteringNumber[i]) / total;
+                                    break;
+                                case '×':                                    
+                                    total = parseFloat(state.enteringNumber[i]) * total;
+                                    break;
+                                case '−':                                
                                     total = parseFloat(state.enteringNumber[i]) - total;
+                                    break;
                                 case '+':
                                     total = parseFloat(state.enteringNumber[i]) + total;
+                                    break;
                             }                            
                         }
                         return {
                             ...state,
+                            isEditingNumber: false,
                             total: total,
                             renderingNumber: total.toString(),
-                            pendingOperator: [],
-                            enteringNumber: []
+                            pendingOperator: '',
+                            enteringNumber: [...[], total.toString()]
                         };
                     }
 
                     var lastOperator = state.pendingOperator[state.pendingOperator.length - 1];
-                    if (lastOperator === '&divide;' 
-                        || lastOperator === '&times;' 
-                        || ((lastOperator === '&minus;' || lastOperator === '+') && (action.payload === '&minus;' || action.payload === '+'))) {
+                    if (action.payload === '−' || action.payload === '+') {
+                        let total = parseFloat(state.renderingNumber);
                         
+                        for (let i = state.pendingOperator.length - 1; i >= 0; i--) {
+                            switch (state.pendingOperator[i]) {
+                                case '÷':
+                                    total = parseFloat(state.enteringNumber[i]) / total;
+                                    break;
+                                case '×':                                    
+                                    total = parseFloat(state.enteringNumber[i]) * total;
+                                    break;
+                                case '−':                                
+                                    total = parseFloat(state.enteringNumber[i]) - total;
+                                    break;
+                                case '+':
+                                    total = parseFloat(state.enteringNumber[i]) + total;
+                                    break;
+                            }                            
+                        }
                         
-                        // return {
-                        //     ...state,
-                        //     total: total
-                        // }
-                    }
-                    if ((lastOperator === '&minus;' || lastOperator === '+') && (action.payload === '&divide;' || action.payload === '&times;')) {
                         return {
                             ...state,
+                            isEditingNumber: false,
+                            total: total,
+                            renderingNumber: total.toString(),
+                            enteringNumber: [...[], total.toString()],
+                            pendingOperator: [...[], action.payload]
+                        };
+                    }
+                    if ((lastOperator === '−' || lastOperator === '+') && (action.payload === '÷' || action.payload === '×')) {
+                        return {
+                            ...state,
+                            isEditingNumber: false,
                             pendingOperator: [...state.pendingOperator, action.payload]
+                        };
+                    }
+                    if ((lastOperator === '÷' || lastOperator === '×') && (action.payload === '÷' || action.payload === '×')) {
+                        let total = parseFloat(state.renderingNumber);
+                        let breakIndex = 0;
+                        
+                        for (let i = state.pendingOperator.length - 1; i >= 0; i--) {
+                            if (state.pendingOperator[i] === '−' || state.pendingOperator[i] === '+') {
+                                breakIndex = i;
+                                break;
+                            }
+                            switch (state.pendingOperator[i]) {
+                                case '÷':
+                                    total = parseFloat(state.enteringNumber[i]) / total;
+                                    break;
+                                case '×':                                    
+                                    total = parseFloat(state.enteringNumber[i]) * total;
+                                    break;                                
+                            }                            
+                        }
+                        console.log(breakIndex);
+
+                        const updatedPendingOperator = state.pendingOperator.map((item, index) => {
+                            if (index <= breakIndex) {
+                                return item;
+                            }
+                        });
+
+                        const updatedPendingNumber = state.enteringNumber.map((item, index) => {
+                            if (index <= breakIndex) {
+                                return item;
+                            }
+                        });
+
+                        return {
+                            ...state,
+                            isEditingNumber: false,
+                            renderingNumber: total.toString(),
+                            enteringNumber: [...updatedPendingNumber, total.toString()],
+                            pendingOperator: [...updatedPendingOperator, action.payload]
                         };
                     }
                 }
@@ -98,11 +164,11 @@ export default function(state = initialState, action) {
                     
                     for (let i = state.pendingOperator.length - 1; i >= 0; i--) {
                         switch (state.pendingOperator[i]) {
-                            case '&divide;':
+                            case '÷':
                                 total = parseFloat(state.enteringNumber[i]) / total;                                
-                            case '&times;':
+                            case '×':
                                 total = parseFloat(state.enteringNumber[i]) * total;                                
-                            case '&minus;':                                
+                            case '−':                                
                                 total = parseFloat(state.enteringNumber[i]) - total;
                             case '+':
                                 total = parseFloat(state.enteringNumber[i]) + total;
@@ -129,6 +195,8 @@ export default function(state = initialState, action) {
         case CLICK_CLEAR:
             return {
                 ...state,
+                total: 0,
+                isEditingNumber: true,
                 renderingNumber: '0',
                 enteringNumber: '',
                 pendingOperator: ''
